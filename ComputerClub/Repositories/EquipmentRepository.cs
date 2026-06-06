@@ -29,7 +29,7 @@ namespace ComputerClub.Repositories
                     "Зайнятий" => EquipmentStatus.Occupied,
                     "Заброньований" => EquipmentStatus.Booked,
                     _ => EquipmentStatus.Available
-                }
+                },
             };
         }
 
@@ -71,7 +71,8 @@ namespace ComputerClub.Repositories
             };
 
             string query = $"insert into equipment (eq_number, eq_type, specifications, eq_status) " +
-                           $"values ('{equipment.Number}', '{typeStr}', '{equipment.Specifications}', '{statusStr}')";
+                           $"values ('{equipment.Number}', '{typeStr}', " +
+                           $"'{equipment.Specifications}', '{statusStr}', ";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
@@ -90,11 +91,11 @@ namespace ComputerClub.Repositories
             };
 
             string query = $"update equipment set " +
-                           $"eq_number = '{equipment.Number}', " +
-                           $"eq_type = '{typeStr}', " +
-                           $"specifications = '{equipment.Specifications}', " +
-                           $"eq_status = '{statusStr}' " +
-                           $"where id = {equipment.Id}";
+               $"eq_number = '{equipment.Number}', " +
+               $"eq_type = '{typeStr}', " +
+               $"specifications = '{equipment.Specifications}', " +
+               $"eq_status = '{statusStr}', " +
+               $"where id = {equipment.Id}";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
