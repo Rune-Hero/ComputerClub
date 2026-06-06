@@ -17,12 +17,39 @@ namespace ComputerClub.Services
             eqRepo = new EquipmentRepository();
         }
 
+        public List<Equipment> GetAllEquipment()
+        {
+            return eqRepo.GetAll();
+        }
+
+        public bool UpdateEquipment(Equipment equipment)
+        {
+            if (equipment == null) return false;
+
+            if (equipment.Number <= 0)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(equipment.Specifications) || equipment.Specifications.Trim().Length < 5)
+            {
+                return false;
+            }
+
+            return eqRepo.Update(equipment);
+        }
+
+        public bool DeleteEquipment(int id)
+        {
+            return eqRepo.Delete(id);
+        }
+
         public List<Equipment> GetEquipmentByType(EquipmentType type)
         {
             var eqList = eqRepo.GetAll();
             var fiteredEqList = new List<Equipment>();
 
-            foreach(var eq in eqList)
+            foreach (var eq in eqList)
             {
                 if (eq.Type == type)
                 {
@@ -58,6 +85,33 @@ namespace ComputerClub.Services
             }
 
             return [freeCount, occupiedCount, bookedCount];
+        }
+
+        public List<Equipment> SearchEquipment(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return eqRepo.GetAll();
+            }
+
+            return eqRepo.Search(text);
+        }
+
+        public bool AddEquipment(Equipment equipment)
+        {
+            if (equipment == null) return false;
+
+            if (equipment.Number <= 0)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(equipment.Specifications) || equipment.Specifications.Trim().Length < 5)
+            {
+                return false;
+            }
+
+            return eqRepo.Add(equipment);
         }
     }
 }

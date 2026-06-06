@@ -72,7 +72,7 @@ namespace ComputerClub.Repositories
 
             string query = $"insert into equipment (eq_number, eq_type, specifications, eq_status) " +
                            $"values ('{equipment.Number}', '{typeStr}', " +
-                           $"'{equipment.Specifications}', '{statusStr}', ";
+                           $"'{equipment.Specifications}', '{statusStr}')";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
@@ -94,7 +94,7 @@ namespace ComputerClub.Repositories
                $"eq_number = '{equipment.Number}', " +
                $"eq_type = '{typeStr}', " +
                $"specifications = '{equipment.Specifications}', " +
-               $"eq_status = '{statusStr}', " +
+               $"eq_status = '{statusStr}' " +
                $"where id = {equipment.Id}";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
@@ -107,6 +107,32 @@ namespace ComputerClub.Repositories
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
+        }
+
+        public List<Equipment> Search(string searchText)
+        {
+            List<Equipment> equipmentList = new List<Equipment>();
+
+            string safeSearch = MySql.Data.MySqlClient.MySqlHelper.EscapeString(searchText);
+
+            string query = $@"select * from equipment 
+                     where specifications like '%{safeSearch}%' 
+                        or eq_type like '%{safeSearch}%'
+                        or eq_status like '%{safeSearch}%'";
+
+
+            if (int.TryParse(searchText.Trim(), out int searchedNumber))
+            {
+                query += $" or eq_number = {searchedNumber}";
+            }
+
+            DataTable dt = DatabaseManager.Instance.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                equipmentList.Add(MapRowToEquipment(row));
+            }
+
+            return equipmentList;
         }
     }
 }

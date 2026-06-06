@@ -58,7 +58,7 @@ namespace ComputerClub.Repositories
 
         public bool Update(Client client)
         {
-            string query = $"update clients set name = '{client.FullName}', phone = '{client.Phone}', email = '{client.Email}' where id = {client.Id}";
+            string query = $"update clients set full_name = '{client.FullName}', phone = '{client.Phone}', email = '{client.Email}' where id = {client.Id}";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
@@ -70,6 +70,41 @@ namespace ComputerClub.Repositories
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
+        }
+
+        public List<Client> GetTop50()
+        {
+            List<Client> clients = new List<Client>();
+
+            string query = "select * from clients order by id desc limit 50";
+
+            DataTable dt = DatabaseManager.Instance.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                clients.Add(MapRowToClient(row));
+            }
+
+            return clients;
+        }
+
+        public List<Client> Search(string searchText)
+        {
+            List<Client> clients = new List<Client>();
+
+            string safeSearch = MySql.Data.MySqlClient.MySqlHelper.EscapeString(searchText);
+
+            string query = $@"select * from clients 
+                     where full_name LIKE '%{safeSearch}%' 
+                     or phone like '%{safeSearch}%' 
+                     limit 50";
+
+            DataTable dt = DatabaseManager.Instance.ExecuteQuery(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                clients.Add(MapRowToClient(row));
+            }
+
+            return clients;
         }
     }
 }
