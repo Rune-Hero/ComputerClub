@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panelMenu = new Panel();
+            btnTarrifs = new Button();
             btnSettings = new Button();
             btnReports = new Button();
             btnSessions = new Button();
@@ -49,6 +50,7 @@
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(51, 51, 76);
+            panelMenu.Controls.Add(btnTarrifs);
             panelMenu.Controls.Add(btnSettings);
             panelMenu.Controls.Add(btnReports);
             panelMenu.Controls.Add(btnSessions);
@@ -62,6 +64,26 @@
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(220, 600);
             panelMenu.TabIndex = 0;
+            // 
+            // btnTarrifs
+            // 
+            btnTarrifs.Dock = DockStyle.Top;
+            btnTarrifs.FlatAppearance.BorderSize = 0;
+            btnTarrifs.FlatStyle = FlatStyle.Flat;
+            btnTarrifs.Font = new Font("Segoe UI", 10F);
+            btnTarrifs.ForeColor = Color.Gainsboro;
+            btnTarrifs.Image = Properties.Resources.price;
+            btnTarrifs.ImageAlign = ContentAlignment.MiddleLeft;
+            btnTarrifs.Location = new Point(0, 440);
+            btnTarrifs.Name = "btnTarrifs";
+            btnTarrifs.Padding = new Padding(12, 0, 0, 0);
+            btnTarrifs.Size = new Size(220, 60);
+            btnTarrifs.TabIndex = 8;
+            btnTarrifs.Text = "    Тарифи";
+            btnTarrifs.TextAlign = ContentAlignment.MiddleLeft;
+            btnTarrifs.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnTarrifs.UseVisualStyleBackColor = true;
+            btnTarrifs.Click += btnTarrifs_Click;
             // 
             // btnSettings
             // 
@@ -235,7 +257,7 @@
             panelTitleBar.Dock = DockStyle.Top;
             panelTitleBar.Location = new Point(220, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(804, 80);
+            panelTitleBar.Size = new Size(842, 80);
             panelTitleBar.TabIndex = 1;
             panelTitleBar.SizeChanged += panelTitleBar_SizeChanged;
             panelTitleBar.MouseDown += panelTitleBar_MouseDown;
@@ -259,7 +281,7 @@
             panelDesktop.Dock = DockStyle.Fill;
             panelDesktop.Location = new Point(220, 80);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(804, 520);
+            panelDesktop.Size = new Size(842, 520);
             panelDesktop.TabIndex = 2;
             // 
             // MainForm
@@ -267,7 +289,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(39, 39, 58);
-            ClientSize = new Size(1024, 600);
+            ClientSize = new Size(1062, 600);
             Controls.Add(panelDesktop);
             Controls.Add(panelTitleBar);
             Controls.Add(panelMenu);
@@ -297,5 +319,6 @@
         private Label lblTitle;
         private Label label1;
         private Panel panelDesktop;
+        private Button btnTarrifs;
     }
 }

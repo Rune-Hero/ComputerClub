@@ -21,7 +21,7 @@ namespace ComputerClub.Forms
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        
+
 
         private Button? currentButton;
         private Random random;
@@ -41,6 +41,7 @@ namespace ComputerClub.Forms
         {
             RenderTitleLabel();
             btnMap_Click(btnMap, EventArgs.Empty);
+            
         }
 
         private Color SelectThemeColor()
@@ -172,6 +173,12 @@ namespace ComputerClub.Forms
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void btnTarrifs_Click(object sender, EventArgs e)
+        {
+            TariffsForm tariffsForm = new TariffsForm();
+            tariffsForm.Show();
         }
     }
 }

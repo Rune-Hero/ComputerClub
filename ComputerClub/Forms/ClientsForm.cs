@@ -24,6 +24,11 @@ namespace ComputerClub.Forms
             clientService = new ClientService();
         }
 
+        public ClientsForm(string initialName) : this()
+        {
+            txtAddFullName.Text = initialName;
+        }
+
         private void LoadToGrid()
         {
             dgvClients.Rows.Clear();

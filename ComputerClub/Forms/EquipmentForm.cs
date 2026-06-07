@@ -207,11 +207,9 @@ namespace ComputerClub.Forms
 
         private void btnCreateEquipment_Click(object sender, EventArgs e)
         {
-            // 1. Зчитуємо дані з твоїх нових текстових полів
             string numberText = txtAddNumber.Text.Trim();
             string specifications = txtAddSpecifications.Text.Trim();
 
-            // 2. Валідація номера пристрою (має бути коректним числом > 0)
             if (!int.TryParse(numberText, out int number) || number <= 0)
             {
                 MessageBox.Show("Номер обладнання має бути додатним числом!", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -219,7 +217,6 @@ namespace ComputerClub.Forms
                 return;
             }
 
-            // 3. Валідація характеристик (не менше 5 символів)
             if (string.IsNullOrWhiteSpace(specifications) || specifications.Length < 5)
             {
                 MessageBox.Show("Будь ласка, введіть коректні технічні характеристики (хоча б 5 символів)!", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -227,7 +224,6 @@ namespace ComputerClub.Forms
                 return;
             }
 
-            // 4. Перевірка, чи вибрано тип у ComboBox
             if (cmbAddType.SelectedItem == null)
             {
                 MessageBox.Show("Будь ласка, виберіть тип обладнання з випадаючого списку!", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -235,10 +231,8 @@ namespace ComputerClub.Forms
                 return;
             }
 
-            // Кастимо вибраний елемент назад у твій Enum
             EquipmentType selectedType = (EquipmentType)cmbAddType.SelectedItem;
 
-            // 5. Створюємо об'єкт нового обладнання (статус за замовчуванням — Вільний)
             Equipment newEquipment = new Equipment
             {
                 Number = number,
@@ -247,21 +241,17 @@ namespace ComputerClub.Forms
                 Status = EquipmentStatus.Available
             };
 
-            // 6. Викликаємо метод сервісу для додавання в базу
             bool isSuccess = equipmentService.AddEquipment(newEquipment);
 
             if (isSuccess)
             {
                 MessageBox.Show("Обладнання успішно додано до бази даних!", "Успіх", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Очищаємо поля після успішного додавання
                 txtAddNumber.Clear();
                 txtAddSpecifications.Clear();
 
-                // Скидаємо вибір у ComboBox на перший елемент, якщо він є
                 if (cmbAddType.Items.Count > 0) cmbAddType.SelectedIndex = 0;
 
-                // Оновлюємо таблицю DataGridView, щоб одразу побачити нову техніку
                 LoadToGrid();
             }
             else

@@ -48,8 +48,10 @@ namespace ComputerClub.Repositories
 
         public bool Add(Tariff tariff)
         {
+            string priceStr = tariff.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
             string query = $"insert into tariffs (tariff_name, price_per_hour) " +
-                $"values ('{tariff.Name}', '{tariff.Price}')";
+                           $"values ('{MySql.Data.MySqlClient.MySqlHelper.EscapeString(tariff.Name)}', {priceStr})";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
@@ -57,7 +59,12 @@ namespace ComputerClub.Repositories
 
         public bool Update(Tariff tariff)
         {
-            string query = $"update tariffs set tariff_name = '{tariff.Name}', price_per_hour = '{tariff.Price}' where id = {tariff.Id}";
+            string priceStr = tariff.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            string query = $"update tariffs set " +
+                           $"tariff_name = '{MySql.Data.MySqlClient.MySqlHelper.EscapeString(tariff.Name)}', " +
+                           $"price_per_hour = {priceStr} " +
+                           $"where id = {tariff.Id}";
 
             int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
             return rowsAffected > 0;
