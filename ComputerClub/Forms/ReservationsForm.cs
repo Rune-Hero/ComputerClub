@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static ComputerClub.Models.Reservation;
+using Timer = System.Windows.Forms.Timer;
 
 namespace ComputerClub.Forms
 {
@@ -22,6 +23,7 @@ namespace ComputerClub.Forms
         private readonly TariffService tariffService;
         private int selectedTariffId = 0;
         private string selectedTariffName = "";
+        private Timer autoUpdateTimer;
 
         public ReservationsForm()
         {
@@ -29,6 +31,16 @@ namespace ComputerClub.Forms
             reservationService = new ReservationService();
             tariffService = new TariffService();
 
+            this.Load += ReservationsForm_Load;
+
+            autoUpdateTimer = new Timer();
+            autoUpdateTimer.Interval = 30000;
+            autoUpdateTimer.Tick += AutoUpdateTimer_Tick;
+            autoUpdateTimer.Start();
+        }
+
+        private void ReservationsForm_Load(object sender, EventArgs e)
+        {
             SetupDataGridView();
             LoadToGrid();
             SetupAutoComplete();
@@ -64,8 +76,13 @@ namespace ComputerClub.Forms
 
         public void LoadToGrid()
         {
-            dgvReservations.Rows.Clear();
+            if (dgvReservations.Columns.Count == 0) return;
+
             DataTable dt = reservationService.GetReservationsForGrid();
+
+            if (dt == null) return;
+
+            dgvReservations.Rows.Clear();
 
             foreach (DataRow row in dt.Rows)
             {
@@ -306,6 +323,14 @@ namespace ComputerClub.Forms
                 MessageBox.Show("Помилка створення бронювання.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void AutoUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            reservationService.CheckAndExpiredReservations();
+            LoadToGrid();
+            LoadEquipment();
+        }
+
 
         
     }

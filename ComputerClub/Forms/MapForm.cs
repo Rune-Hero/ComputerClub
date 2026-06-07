@@ -146,7 +146,38 @@ namespace ComputerClub.Forms
 
                 btnDevice.Click += (s, args) =>
                 {
-                    MessageBox.Show($"Керування пристроєм: {eq.Type} №{eq.Number}\nСтатус: {eq.Status}", "Дія");
+                    // 1. Визначаємо, чи пристрій є VIP
+                    bool isVip = IsVipDevice(eq.Type, eq.Number);
+
+                    // Формуємо текст повідомлення (приводимо статус-енум до рядка)
+                    string infoText = $"Керування пристроєм: {eq.Type} №{eq.Number}\nСтатус: {eq.Status}";
+                    if (isVip)
+                    {
+                        infoText += " (VIP ЗОНА)";
+                    }
+
+                    // 2. Перевіряємо статус пристрою через Енум
+                    if (eq.Status == EquipmentStatus.Available)
+                    {
+                        // Додаємо запитання про відкриття форми сесій
+                        infoText += "\n\nБажаєте запустити нову сесію для цього пристрою?";
+
+                        // Показуємо MessageBox з кнопками "Так" та "Ні"
+                        DialogResult result = MessageBox.Show(infoText, "Дія", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        // 3. Якщо адмін натиснув "Так" — створюємо та відкриваємо форму через .Show()
+                        if (result == DialogResult.Yes)
+                        {
+                            // Створюємо форму сесій через перевантажений конструктор
+                            SessionsForm sessionsForm = new SessionsForm(eq, isVip);
+                            sessionsForm.ShowDialog();
+                        }
+                    }
+                    else
+                    {
+                        // Якщо статус "Зайнято" або "Заброньовано" — просто виводимо інформацію
+                        MessageBox.Show(infoText, "Інформація про пристрій", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 };
 
                 panel.Controls.Add(btnDevice);

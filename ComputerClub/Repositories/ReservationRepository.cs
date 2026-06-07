@@ -120,6 +120,12 @@ namespace ComputerClub.Repositories
             return rowsAffected > 0;
         }
 
+        public bool UpdateEquipmentStatus(int equipmentId, string status)
+        {
+            string query = $"update equipment set eq_status = '{status}' where id = {equipmentId}";
+            int rowsAffected = DatabaseManager.Instance.ExecuteNonQuery(query);
+            return rowsAffected > 0;
+        }
         public bool Delete(int id)
         {
             string query = $"delete from reservations where id = {id}";
@@ -193,6 +199,47 @@ namespace ComputerClub.Repositories
                 return Convert.ToInt32(dt.Rows[0][0]) > 0;
             }
             return false;
+        }
+
+        public void AutoUpdateReservationsAndEquipment()
+        {
+            string nowStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string activateEquipQuery = $@"
+        update equipment set eq_status = 'Заброньований'
+        where id in (
+            select equipment_id 
+            from reservations 
+            where res_status = 'Активно' 
+              and '{nowStr}' >= start_time 
+              and '{nowStr}' < end_time
+        )";
+            DatabaseManager.Instance.ExecuteNonQuery(activateEquipQuery);
+
+            string getExpiredQuery = $"select id, equipment_id from reservations where res_status = 'Активно' and '{nowStr}' >= end_time";
+            DataTable expiredReservations = DatabaseManager.Instance.ExecuteQuery(getExpiredQuery);
+
+            foreach (DataRow row in expiredReservations.Rows)
+            {
+                int resId = Convert.ToInt32(row["id"]);
+                int equipId = Convert.ToInt32(row["equipment_id"]);
+
+                UpdateStatus(resId, Reservation.ReservationStatus.Completed);
+
+                string checkNextQuery = $@"
+            select count(*) from reservations 
+            where equipment_id = {equipId} 
+              and res_status = 'Активно' 
+              and '{nowStr}' >= start_time 
+              and '{nowStr}' < end_time";
+
+                DataTable dtCheck = DatabaseManager.Instance.ExecuteQuery(checkNextQuery);
+
+                if (dtCheck.Rows.Count == 0 || Convert.ToInt32(dtCheck.Rows[0][0]) == 0)
+                {
+                    UpdateEquipmentStatus(equipId, "Вільний");
+                }
+            }
         }
     }
 }

@@ -89,6 +89,7 @@
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
+            MinimumSize = new Size(520, 280);
             Name = "EditClientForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "EditClientForm";

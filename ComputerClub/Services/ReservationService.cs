@@ -51,19 +51,44 @@ namespace ComputerClub.Services
                 return false;
             }
 
-            return rsRepo.Add(reservation);
+            bool isAdded = rsRepo.Add(reservation);
+
+            if (isAdded)
+            {
+                if (reservation.StartTime <= DateTime.Now && reservation.EndTime > DateTime.Now)
+                {
+                    rsRepo.UpdateEquipmentStatus(reservation.EquipmentId, "Заброньований");
+                }
+            }
+
+            return isAdded;
         }
 
         public bool CancelReservation(int id)
         {
             if (id <= 0) return false;
-            return rsRepo.UpdateStatus(id, ReservationStatus.Canceled);
+
+            Reservation? reservation = rsRepo.GetById(id);
+
+            bool isUpdated = rsRepo.UpdateStatus(id, Reservation.ReservationStatus.Canceled);
+
+            if (isUpdated && reservation != null)
+            {
+                rsRepo.UpdateEquipmentStatus(reservation.EquipmentId, "Вільний");
+            }
+
+            return isUpdated;
         }
 
         public bool IsEquipmentOccupied(int equipmentId, DateTime startTime, DateTime endTime)
         {
             if (equipmentId <= 0) return false;
             return rsRepo.HasConflictingReservation(equipmentId, startTime, endTime);
+        }
+
+        public void CheckAndExpiredReservations()
+        {
+            rsRepo.AutoUpdateReservationsAndEquipment();
         }
     }
 }

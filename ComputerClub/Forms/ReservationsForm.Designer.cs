@@ -236,6 +236,7 @@
             Controls.Add(tableLayoutPanel1);
             Name = "ReservationsForm";
             Text = "ReservationsForm";
+            Load += ReservationsForm_Load;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
             pnlInputs.ResumeLayout(false);

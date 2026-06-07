@@ -97,6 +97,8 @@
             Controls.Add(btnSave);
             Controls.Add(btnCancel);
             Controls.Add(txtNumber);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "EditEquipmentForm";
             Text = "EditEquipmentForm";
             Load += EditEquipmentForm_Load;

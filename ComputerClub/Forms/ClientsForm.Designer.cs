@@ -89,6 +89,7 @@
             // 
             dgvClients.AllowUserToAddRows = false;
             dgvClients.AllowUserToDeleteRows = false;
+            dgvClients.AllowUserToResizeRows = false;
             dgvClients.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvClients.BackgroundColor = SystemColors.Control;
             dgvClients.BorderStyle = BorderStyle.None;
